@@ -1,11 +1,8 @@
-import Navbar from '../components/common/Navbar';
+import useAuth from '../hooks/useAuth';
 
 const HomePage = () => {
-    return (
-        <>
-            <Navbar />
-        </>
-    );
+    console.log(useAuth());
+    return <></>;
 };
 
 export default HomePage;

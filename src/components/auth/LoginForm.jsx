@@ -1,10 +1,12 @@
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 import Field from '../common/Field';
 import Input from '../common/Input';
 
 const LoginForm = () => {
     const navigate = useNavigate();
+    const { setAuth } = useAuth();
     const {
         handleSubmit,
         control,
@@ -12,6 +14,7 @@ const LoginForm = () => {
     } = useForm({ mode: 'onTouched' });
     const submitHandler = (formData) => {
         console.log(formData);
+        setAuth({ user: { ...formData } });
         navigate('/');
     };
     return (

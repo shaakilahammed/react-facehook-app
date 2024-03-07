@@ -1,7 +1,7 @@
 import useAuth from '../hooks/useAuth';
 
 const HomePage = () => {
-    console.log(useAuth());
+    console.log(useAuth().auth);
     return <></>;
 };
 

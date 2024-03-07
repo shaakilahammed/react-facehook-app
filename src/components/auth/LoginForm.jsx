@@ -1,5 +1,6 @@
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import api from '../../api';
 import useAuth from '../../hooks/useAuth';
 import Field from '../common/Field';
 import Input from '../common/Input';
@@ -11,11 +12,24 @@ const LoginForm = () => {
         handleSubmit,
         control,
         formState: { errors },
+        setError,
     } = useForm({ mode: 'onTouched' });
-    const submitHandler = (formData) => {
-        console.log(formData);
-        setAuth({ user: { ...formData } });
-        navigate('/');
+    const submitHandler = async (formData) => {
+        try {
+            const response = await api.post(`/auth/login`, formData);
+            if (response.status === 200) {
+                const { token, user } = response.data;
+                if (token) {
+                    setAuth({ user, token });
+                    navigate('/');
+                }
+            }
+        } catch (error) {
+            setError('root.invalid', {
+                type: 'invalid',
+                message: 'Invalid email or password',
+            });
+        }
     };
     return (
         <form
@@ -81,6 +95,9 @@ const LoginForm = () => {
                     }}
                 />
             </Field>
+            <p className="text-red-600 font-light">
+                {errors?.root?.invalid?.message}
+            </p>
 
             {/* <!-- Submit --> */}
             <button

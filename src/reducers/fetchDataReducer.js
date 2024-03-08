@@ -16,7 +16,7 @@ const fetchDataReducer = (state, action) => {
         case FETCH_DATA.ERROR: {
             return {
                 isLoading: false,
-                articles: [],
+                data: {},
                 isError: true,
                 error: action.error,
             };

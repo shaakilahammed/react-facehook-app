@@ -1,44 +1,29 @@
-import { useEffect, useState } from 'react';
-
-import useAuth from '../hooks/useAuth';
-import useAxios from '../hooks/useAxios';
+import { useContext } from 'react';
+import ProfileInfo from '../components/profile/ProfileInfo';
+import MyPosts from '../components/profile/posts/MyPosts';
+import { ProfileContext } from '../contexts';
 
 const ProfilePage = () => {
-    const { auth } = useAuth();
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [user, setUser] = useState(null);
-    const [posts, setPosts] = useState([]);
-    const { authorizedApi } = useAxios();
-    useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const response = await authorizedApi.get(
-                    `/profile/${auth?.user?.id}`
-                );
-                setUser(response?.data?.user);
-                setPosts(response?.data?.posts);
-            } catch (error) {
-                setError(error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const {
+        profileQueryState: { isLoading, data, error, isError },
+    } = useContext(ProfileContext);
 
-        fetchProfile();
-    }, [authorizedApi, auth?.user?.id]);
-
-    if (loading) {
-        return <div> Fetching your Profile data...</div>;
+    if (isLoading) {
+        return <div> Fetching Profile data...</div>;
     }
-    if (error) {
+    if (isError) {
         return <div>{JSON.stringify(error)}</div>;
     }
     return (
-        <div>
-            Welcome, {user?.firstName} {user?.lastName}
-            <p>You have {posts.length} posts.</p>
-        </div>
+        <main className="mx-auto max-w-[1020px] py-8">
+            <div className="container">
+                {/* <!-- profile info --> */}
+                <ProfileInfo user={data?.user} />
+                {/* <!-- end profile info --> */}
+
+                <MyPosts posts={data?.posts} />
+            </div>
+        </main>
     );
 };
 

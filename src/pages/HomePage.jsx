@@ -1,12 +1,12 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect } from 'react';
 import { actions } from '../actions';
-import avatarImage from '../assets/images/avatars/avatar_1.png';
+import NewPost from '../components/posts/NewPost';
 import PostList from '../components/posts/PostList';
 import useAxios from '../hooks/useAxios';
-import { initialState, postReducer } from '../reducers/postReducer';
+import usePost from '../hooks/usePost';
 
 const HomePage = () => {
-    const [state, dispatch] = useReducer(postReducer, initialState);
+    const { state, dispatch } = usePost();
     const { authorizedApi } = useAxios();
     useEffect(() => {
         dispatch({ type: actions.post.DATA_FETCHING });
@@ -31,7 +31,7 @@ const HomePage = () => {
         };
 
         fetchPost();
-    }, [authorizedApi]);
+    }, [authorizedApi, dispatch]);
     let content = null;
     if (state?.loading) {
         content = <div> fetching posts...</div>;
@@ -46,24 +46,7 @@ const HomePage = () => {
     return (
         <main className="mx-auto max-w-[1020px] py-8">
             <div className="container">
-                <div className="card">
-                    <div className="flex-center mb-3 gap-2 lg:gap-4">
-                        <img
-                            className="max-w-10 max-h-10 rounded-full lg:max-h-[58px] lg:max-w-[58px]"
-                            src={avatarImage}
-                            alt="A"
-                        />
-
-                        <div className="flex-1">
-                            <textarea
-                                className="h-16 w-full rounded-md bg-lighterDark p-3 focus:outline-none sm:h-20 sm:p-6"
-                                name="post"
-                                id="post"
-                                placeholder="What's on your mind?"
-                            ></textarea>
-                        </div>
-                    </div>
-                </div>
+                <NewPost />
                 {content}
             </div>
         </main>

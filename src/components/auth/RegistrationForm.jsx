@@ -1,5 +1,6 @@
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import api from '../../api';
 import Field from '../common/Field';
 import Input from '../common/Input';
 
@@ -10,41 +11,76 @@ const RegistrationForm = () => {
         control,
         formState: { errors },
         watch,
+        setError,
     } = useForm({ mode: 'onTouched' });
-    const submitHandler = (formData) => {
-        console.log(formData);
-        navigate('/login');
+    const submitHandler = async (formData) => {
+        try {
+            const response = await api.post(`/auth/register`, formData);
+            if (response.status === 201) {
+                navigate('/login');
+            }
+        } catch (error) {
+            setError('root.invalid', {
+                type: 'invalid',
+                message:
+                    error?.response?.data?.error ?? 'Something went wrong!',
+            });
+        }
     };
 
     const password = watch('password');
-    console.log(password);
+    // console.log(password);
     return (
         <form
             className="border-b border-[#3F3F3F] pb-10 lg:pb-[30px]"
             onSubmit={handleSubmit(submitHandler)}
         >
             {/* <!-- name --> */}
-            <Field label="Name" error={errors.name}>
+            <Field label="First Name" error={errors.firstName}>
                 <Controller
-                    name="name"
+                    name="firstName"
                     control={control}
                     defaultValue=""
                     // eslint-disable-next-line no-unused-vars
                     render={({ field: { ref, ...field } }) => (
                         <Input
-                            id="name"
+                            id="firstName"
                             type="text"
                             className={`auth-input ${
                                 errors.email
                                     ? 'border-red-400'
                                     : 'border-[#CCCCCC]/[14%]'
                             }`}
-                            placeholder="Enter your name"
+                            placeholder="Enter your first name"
                             {...field}
                         />
                     )}
                     rules={{
-                        required: 'Name is required',
+                        required: 'First Name is required',
+                    }}
+                />
+            </Field>
+            <Field label="Last Name" error={errors.lastName}>
+                <Controller
+                    name="lastName"
+                    control={control}
+                    defaultValue=""
+                    // eslint-disable-next-line no-unused-vars
+                    render={({ field: { ref, ...field } }) => (
+                        <Input
+                            id="lastName"
+                            type="text"
+                            className={`auth-input ${
+                                errors.email
+                                    ? 'border-red-400'
+                                    : 'border-[#CCCCCC]/[14%]'
+                            }`}
+                            placeholder="Enter your last name"
+                            {...field}
+                        />
+                    )}
+                    rules={{
+                        required: 'Last Name is required',
                     }}
                 />
             </Field>
@@ -131,6 +167,9 @@ const RegistrationForm = () => {
                     }}
                 />
             </Field>
+            <p className="text-red-600 font-light my-2">
+                {errors?.root?.invalid?.message}
+            </p>
             {/* <!-- Submit --> */}
             <button
                 className="auth-input bg-lwsGreen font-bold text-deepDark transition-all hover:opacity-90"

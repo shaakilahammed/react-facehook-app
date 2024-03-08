@@ -3,23 +3,26 @@ import PostAction from './PostAction';
 import PostBody from './PostBody';
 import PostHeader from './PostHeader';
 
-const Post = () => {
+const Post = ({ post }) => {
     return (
         <article className="card mt-6 lg:mt-8">
             {/* <!-- post header --> */}
-            <PostHeader />
+            <PostHeader post={post} />
             {/* <!-- post header ends --> */}
 
             {/* <!-- post body --> */}
-            <PostBody />
+            <PostBody poster={post?.image} content={post?.content} />
             {/* <!-- post body ends --> */}
 
             {/* <!-- post actions --> */}
-            <PostAction />
+            <PostAction
+                postId={post?.id}
+                commentCount={post?.comments?.length}
+            />
             {/* <!-- post actions  --> */}
 
             {/* <!-- comment section --> */}
-            <CommentSection />
+            <CommentSection post={post} />
             {/* <!-- comment section ends --> */}
         </article>
     );

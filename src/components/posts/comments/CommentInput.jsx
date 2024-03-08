@@ -1,9 +1,12 @@
-const CommentInput = () => {
+import { useAvatar } from '../../../hooks/useAvatar';
+
+const CommentInput = ({ post }) => {
+    const avatarUrl = useAvatar(post);
     return (
         <div className="flex-center mb-3 gap-2 lg:gap-4">
             <img
                 className="max-w-7 max-h-7 rounded-full lg:max-h-[34px] lg:max-w-[34px]"
-                src="./assets/images/avatars/avatar_1.png"
+                src={avatarUrl}
                 alt="avatar"
             />
 
